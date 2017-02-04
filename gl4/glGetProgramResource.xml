@@ -136,37 +136,37 @@
                     <row>
                         <entry><constant>GL_REFERENCED_BY_VERTEX_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
                         <entry><constant>GL_REFERENCED_BY_TESS_CONTROL_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
                         <entry><constant>GL_REFERENCED_BY_TESS_EVALUATION_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
                         <entry><constant>GL_REFERENCED_BY_GEOMETRY_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
                         <entry><constant>GL_REFERENCED_BY_FRAGMENT_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
                         <entry><constant>GL_REFERENCED_BY_COMPUTE_SHADER</constant></entry>
                         <entry><constant>GL_UNIFORM</constant>, <constant>GL_UNIFORM_BLOCK</constant>, <constant>GL_ATOMIC_COUNTER_SHADER</constant>,
-                                            <constant>GL_BUFFER</constant>, <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
+                                            <constant>GL_SHADER_STORAGE_BLOCK</constant>, <constant>GL_BUFFER_VARIABLE</constant>,
                                             <constant>GL_PROGRAM_INPUT</constant>, <constant>GL_PROGRAM_OUTPUT</constant></entry>
                     </row>
                     <row>
