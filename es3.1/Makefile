@@ -22,6 +22,7 @@ XIFILES = compressedformattable.xml \
 	  internalformattable.xml \
 	  renderbufferformattable.xml \
 	  unsizedformattable.xml \
+      glslvariabletypetable.xml \
 	  apifunchead.xml \
 	  apiversion.xml \
 	  funchead.xml \
