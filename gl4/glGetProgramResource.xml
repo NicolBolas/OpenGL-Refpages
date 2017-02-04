@@ -228,8 +228,9 @@
         </para>
         <para>
             For the property <constant>GL_TYPE</constant>, a single integer identifying the type of an active
-            variable is written to <parameter>params</parameter>.  The integer returned is one of the
-            values found in table 2.16.
+            variable is written to <parameter>params</parameter>.   The
+            returned value can be any of the values from the following table:
+            <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="glslvariabletypetable.xml"/>
         </para>
         <para>
             For the property <constant>GL_ARRAY_SIZE</constant>, a single integer identifying the number of
