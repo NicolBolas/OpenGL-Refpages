@@ -501,6 +501,9 @@ glRenderbufferStorage.xhtml glRenderbufferStorageMultisample.xhtml \
 
 glTexBuffer.xhtml glTexBufferRange.xhtml \
     : ../texboformattable.xml
+    
+glGetActiveUniformsiv.xhtml glGetProgramResource.xhtml \
+    : ../glslvariabletypetable.xml
 
 glBindBuffer.xml \
 glBufferData.xhtml \

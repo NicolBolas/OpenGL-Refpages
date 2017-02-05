@@ -359,6 +359,9 @@ glCompressedTexImage2D.xhtml glCompressedTexImage3D.xhtml \
 
 glRenderbufferStorage.xhtml glRenderbufferStorageMultisample.xhtml \
     : ../renderbufferformattable.xml
+    
+glGetActiveUniformsiv.xhtml \
+    : ../glslvariabletypetable.xml
 
 # These are very conservative dependencies
 $(GLSLXML): $(GLSLXIFILES)

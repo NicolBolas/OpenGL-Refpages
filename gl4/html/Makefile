@@ -790,6 +790,9 @@ glMapBufferRange.xhtml \
 glMapBuffer.xhtml \
     : ../bufferbindings.xml
 
+glGetActiveUniformsiv.xhtml glGetProgramResource.xhtml \
+    : ../glslvariabletypetable.xml
+
 # These are very conservative dependencies
 $(APIXML): $(APIXIFILES)
 
