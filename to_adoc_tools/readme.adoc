@@ -6,30 +6,30 @@ What follows is some information about the attempts to automatically convert Doc
 
 == Information Not Converted By Pandoc
 
-- The title/short description
-- The function synopsis section
-- Some inline math functions (delimited by `$` characters in a paragraph without any XML or latexmath: markup).
-- Any `+citerefentry+` cross-links.
-- Versions.
-- Inclusions of tables.
+* The title/short description
+* The function synopsis section
+* Some inline math functions (delimited by `$` characters in a paragraph without any XML or latexmath: markup).
+* Any `+citerefentry+` cross-links.
+* Versions.
+* Inclusions of tables.
 
 Necessary tools:
 
-- Conversion for the DocBook XML files:
--- Pandoc DocBook 5 to AsciiDoc.
--- Extract the title/description to a separate file.
--- Extract the function synopsis section to a separate file.
-- Search DocBook XML files:
--- All `+citerefentry+` cross-links and the files they come from.
--- All `xi:include`sions.
-- Search AsciiDoc output:
--- Find files containing `+$...$+` that are not prefixed by `+latexmath:+` notation.
-- Transformations for Pandoc output files:
--- Convert Pandoc output to more standard block notation `+= title+` rather than `title\n-----` notation.
--- Remove everything before the "Parameters" section.
--- Prepend any `+latexmath:[+` tags with `+[eq]+`.
--- Merge the direct Pandoc outputs with the ancillary files generated from DocBook.
-- Generate an index page.
+* Conversion for the DocBook XML files:
+** Pandoc DocBook 5 to AsciiDoc.
+** Extract the title/description to a separate file.
+** Extract the function synopsis section to a separate file.
+* Search DocBook XML files:
+** All `+citerefentry+` cross-links and the files they come from.
+** All `xi:include`sions.
+* Search AsciiDoc output:
+** Find files containing `+$...$+` that are not prefixed by `+latexmath:+` notation.
+* Transformations for Pandoc output files:
+** Convert Pandoc output to more standard block notation `+= title+` rather than `title\n-----` notation.
+** Remove everything before the "Parameters" section.
+** Prepend any `+latexmath:[+` tags with `+[eq]+`.
+** Merge the direct Pandoc outputs with the ancillary files generated from DocBook.
+* Generate an index page.
 
 == Pandoc to Initial DocBook XML
 
@@ -37,15 +37,15 @@ This tool takes a source directory and a destination directory.
 
 For each "*.xml" file in the source directory, perform the following action:
 
-- Parse the file as XML, without XInclusion.
-- If the root element is `refentry`:
--- Store the filename in the list of source files.
--- From the `refnamediv` element, build a proper AsciiDoc header string. Store this alongside the file.
--- From the `refsynopsisdiv` element, build the function synopsis section. Store this alongside the file.
--- Find any `citerefentry` elements, extract their text and the text of what they link to, and store this alongside the file.
--- Find any `xi:include` elements, extract their target files, and store them alongside the file.
--- Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file alongside the file.
-- If the root element is anything else:
--- Store this (source) filename in a list of included files.
--- Perform the Pandoc conversion of the file to the destination directory. The name of the destination file should be prefixed by `inc_`.
+* Parse the file as XML, without XInclusion.
+* If the root element is `refentry`:
+** Store the filename in the list of source files.
+** From the `refnamediv` element, build a proper AsciiDoc header string. Store this alongside the file.
+** From the `refsynopsisdiv` element, build the function synopsis section. Store this alongside the file.
+** Find any `citerefentry` elements, extract their text and the text of what they link to, and store this alongside the file.
+** Find any `xi:include` elements, extract their target files, and store them alongside the file.
+** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file alongside the file.
+* If the root element is anything else:
+** Store this (source) filename in a list of included files.
+** Perform the Pandoc conversion of the file to the destination directory. The name of the destination file should be prefixed by `inc_`.
 
