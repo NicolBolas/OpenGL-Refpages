@@ -1,6 +1,6 @@
 = Tools for converting DocBook to AsciiDoc
 
-This file contains the tools that were used to do the initial automatic conversion to AsciiDoc. Note that these tools are here for development purposes and are *not complete*. This conversion process will undoubtedly be arcane and require tools that won't be listed here, since it is not meant to be done by anyone other than myself.
+This directory contains the tools that were used to do the initial automatic conversion to AsciiDoc. Note that these tools are here for development purposes and are __not complete__. This conversion process will undoubtedly be arcane and require tools that won't be listed here, since it is not meant to be done by anyone other than myself.
 
 What follows is some information about the attempts to automatically convert DocBook to AsciiDoc.
 
@@ -37,15 +37,15 @@ This tool takes a source directory and a destination directory.
 
 For each "*.xml" file in the source directory, perform the following action:
 
-* Parse the file as XML, without XInclusion.
-* If the root element is `refentry`:
+* Parse the file as XML, without XInclusion. Print errors for any non-XML files.
+* If the root element is `refentry`, build a data structure for a documented function. This structure should be added to a map of base filenames to data structures. This process includes:
 ** Store the filename in the list of source files.
-** From the `refnamediv` element, build a proper AsciiDoc header string. Store this alongside the file.
-** From the `refsynopsisdiv` element, build the function synopsis section. Store this alongside the file.
-** Find any `citerefentry` elements, extract their text and the text of what they link to, and store this alongside the file.
-** Find any `xi:include` elements, extract their target files, and store them alongside the file.
-** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file alongside the file.
-* If the root element is anything else:
+** From the `refnamediv` element, build a proper AsciiDoc header string. Store this in the data structure.
+** From the `refsynopsisdiv` element, build the function synopsis section. Store this in the data structure.
+** Find any `citerefentry` elements, extract their text and the text of what they link to, and store this in the data structure.
+** Find any `xi:include` elements, extract their target files, and store them in the data structure.
+** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file in the data structure.
+* If the root element is anything else, then the XML is an included file. Build a data structure for such files. This process includes:
 ** Store this (source) filename in a list of included files.
 ** Perform the Pandoc conversion of the file to the destination directory. The name of the destination file should be prefixed by `inc_`.
 
