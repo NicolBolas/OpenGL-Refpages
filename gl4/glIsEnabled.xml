@@ -18,7 +18,8 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>glIsEnabled, glIsEnabledi</refname>
+        <refname>glIsEnabled</refname>
+        <refname>glIsEnabledi</refname>
         <refpurpose>test whether a capability is enabled</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>C Specification</title>

@@ -12,7 +12,8 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>dFdx, dFdy</refname>
+        <refname>dFdx</refname>
+        <refname>dFdy</refname>
         <refpurpose>return the partial derivative of an argument with respect to x or y</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>Declaration</title>

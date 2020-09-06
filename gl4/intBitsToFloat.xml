@@ -14,7 +14,8 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>intBitsToFloat, uintBitsToFloat</refname>
+        <refname>intBitsToFloat</refname>
+        <refname>uintBitsToFloat</refname>
         <refpurpose>produce a floating point using an encoding supplied as an integer</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>Declaration</title>

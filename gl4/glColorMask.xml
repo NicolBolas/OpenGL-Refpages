@@ -18,7 +18,8 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>glColorMask, glColorMaski</refname>
+        <refname>glColorMask</refname>
+        <refname>glColorMaski</refname>
         <refpurpose>enable and disable writing of frame buffer color components</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>C Specification</title>

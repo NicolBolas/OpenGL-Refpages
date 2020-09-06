@@ -32,9 +32,10 @@ class MainFile:
                 return
             
             refname = _xpath_refname_text(refnamediv[0])
+            print(refname)
             refpurpose = _xpath_refpurpose_text(refnamediv[0])
             refpurpose = "".join(refpurpose)
-            print(refpurpose)
+            #print(refpurpose)
             
         except etree.XPathError as e:
             print(F"{self._file_path} ERROR: {e}")
