@@ -1,11 +1,23 @@
 
 import os
 import pathlib
+import re
 from lxml import etree
 
-_xpath_refnamediv = etree.ETXPath("descendant::{http://docbook.org/ns/docbook}refnamediv")
-_xpath_refname_text = etree.ETXPath("{http://docbook.org/ns/docbook}refname/text()")
-_xpath_refpurpose_text = etree.ETXPath("{http://docbook.org/ns/docbook}refpurpose/descendant::text()")
+_namespaces = {'db' : 'http://docbook.org/ns/docbook'}
+
+#Useful XPaths. Don't need to recreate them a bunch.
+_xpath_header_abstract_text = etree.XPath("db:refnamediv/db:refpurpose/descendant::text()", namespaces=_namespaces)
+_xpath_header_function_names = etree.XPath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype/db:funcdef/db:function/text()", namespaces=_namespaces)
+
+_xpath_function = etree.XPath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype", namespaces=_namespace)
+
+_xpath_func_parameters = etree.XPath("db::paramdef", namespaces=_namespace)
+
+
+
+#Useful regexes.
+_re_line_end = re.compile("\n\s*")
 
 
 class MainFile:
@@ -24,26 +36,42 @@ class MainFile:
 
 
     def _process_header(self, xml_root):
-        """Reads the `refnamediv` and builds adoc string for the header"""
+        """Extracts the function names and abstract."""
         try:
-            refnamediv = _xpath_refnamediv(xml_root)
-            if len(refnamediv) == 0:
-                print(F"{self._file_path} ERROR: {e}")
+            abstract_text = _xpath_header_abstract_text(xml_root)
+            if len(abstract_text) == 0:
+                print(F"{self._file_path} ERROR: No abstract header.")
+                return
+
+            abstract_text = "".join(abstract_text)
+            
+            #Remove any `\n`s followed by spaces.
+            abstract_text = re.sub(_re_line_end, " ", abstract_text)
+            
+            self._abstract_text = abstract_text
+            
+            func_names = _xpath_header_function_names(xml_root)
+            if len(func_names) == 0:
+                print(F"{self._file_path} ERROR: No function names.")
                 return
             
-            refname = _xpath_refname_text(refnamediv[0])
-            print(refname)
-            refpurpose = _xpath_refpurpose_text(refnamediv[0])
-            refpurpose = "".join(refpurpose)
-            #print(refpurpose)
+            #Remove duplicate names, but don't sort them.
+            func_names = list(dict.fromkeys(func_names))
+
+            self._hdr_func_names = func_names
             
+            print(self._abstract_text)
+            print(self._hdr_func_names)
+
+
         except etree.XPathError as e:
             print(F"{self._file_path} ERROR: {e}")
 
 
     def _process_functions(self, xml_root):
-        """Reads the `refsynopsisdiv` and builds appropriate information
-        about the functions the file defines."""
+        """Reads the `refsynopsisdiv` and builds sufficient
+        information to generate Asciidoc text for them. But
+        don't build that text here."""
         pass
 
 
