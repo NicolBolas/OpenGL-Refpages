@@ -14,7 +14,8 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>glBeginQueryIndexed, glEndQueryIndexed</refname>
+        <refname>glBeginQueryIndexed</refname>
+        <refname>glEndQueryIndexed</refname>
         <refpurpose>delimit the boundaries of a query object on an indexed target</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>C Specification</title>
