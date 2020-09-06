@@ -14,7 +14,9 @@
         <manvolnum>3G</manvolnum>
     </refmeta>
     <refnamediv>
-        <refname>unpackUnorm2x16, unpackUnorm4x8, unpackSnorm4x8</refname>
+        <refname>unpackUnorm2x16</refname>
+        <refname>unpackUnorm4x8</refname>
+        <refname>unpackSnorm4x8</refname>
         <refpurpose>unpack floating-point values from an unsigned integer</refpurpose>
     </refnamediv>
     <refsynopsisdiv><title>Declaration</title>
