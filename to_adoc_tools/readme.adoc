@@ -35,17 +35,39 @@ Necessary tools:
 
 This tool takes a source directory and a destination directory.
 
-For each "*.xml" file in the source directory, perform the following action:
+=== Collation
+
+We begin by collating the list of files and information about them. For each "*.xml" file in the source directory, perform the following action:
 
 * Parse the file as XML, without XInclusion. Print errors for any non-XML files.
 * If the root element is `refentry`, build a data structure for a documented function. This structure should be added to a map of base filenames to data structures. This process includes:
 ** Store the filename in the list of source files.
-** From the `refnamediv` element, build a proper AsciiDoc header string. Store this in the data structure.
-** From the `refsynopsisdiv` element, build the function synopsis section. Store this in the data structure.
+** Extract the textual abstract (from the `refnamediv`) and the function names (from `refsynopsisdiv`). Store this in the data structure.
+** From the `refsynopsisdiv` element, extract the function names, parameters, and return types. Store this in the data structure.
 ** Find any `citerefentry` elements, extract their text and the text of what they link to, and store this in the data structure.
-** Find any `xi:include` elements, extract their target files, and store them in the data structure.
-** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file in the data structure.
+** Find any `xi:include` elements, get their target files, and store them in the data structure.
+** Store the type of the file. A file's type is a GLSL function, GLSL variable, or a GL function.
 * If the root element is anything else, then the XML is an included file. Build a data structure for such files. This process includes:
 ** Store this (source) filename in a list of included files.
+** Find any `citerefentry` elements, extract what they link to, and store this in the included file.
+
+Verify that any included files are actually included by some main file at some point. Verify that any cited files actually exist.
+
+=== DocBook Transformation
+
+The next step is to copy the DocBook source files to a temporary directory. Hwoever, this copy needs to modify the source files appropriately before Pandoc gets a crack at them.
+
+For main files, we must do the following:
+
+* Remove all `xi:include` elements. Any includes that go to non-version/header files  should be replaced with AsciiDoctor textual includes of the equivalent generated file.
+
+* Remove any `refsect` elements with an `xml:id` of `versions` or `seealso`.
+
+=== Pandoc Transformation
+
+=== AsciiDoctor Addendums
+
+** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file in the data structure.
+
 ** Perform the Pandoc conversion of the file to the destination directory. The name of the destination file should be prefixed by `inc_`.
 
