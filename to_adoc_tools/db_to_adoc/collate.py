@@ -199,15 +199,18 @@ class MainFile:
 
 
     def _process_include(node):
-        #print(F"{'href' in node.attrib}, {'xpointer' in node.attrib}")
+        """Processes a single xi:include, returning the string minus the
+        extension"""
         include = node.attrib['href']
+        include = pathlib.PurePath(include).stem
         #print(include)
         return include
     
 
     def _process_includes(self, xml_root):
         """Finds `xi:include` elements and builds a list of these
-        target files."""
+        target files. These are the name of the included file
+        minus the extension."""
         self._includes = [MainFile._process_include(node)
             for node in _xpath_xincludes(xml_root)
             if node.attrib["href"] not in ignored_includes]
@@ -241,6 +244,20 @@ class MainFile:
     def func_names_unique(self):
         """Retrieves a list of unique functions defined by this file."""
         return self._hdr_func_names
+        
+
+    def includes(self):
+        if self._includes:
+            return self._includes
+        else:
+            return []
+    
+    
+    def citations(self):
+        if self._citations:
+            return self._citations
+        else:
+            return []
 
 
 class Collate:
@@ -248,39 +265,40 @@ class Collate:
     DocBook XML files within."""
     
     def __init__(self, doc_dir_path):
-        """Searches the given directory for XML files and processes
-        them into two sets: Files the aren't included and files
-        that are included."""
+        """Searches the given directory for XML files and collect
+        information about them, grouped into distinct types."""
         
         doc_dir_path = pathlib.PurePath(doc_dir_path)
         
-        self._included_files = []
-        self._main_files = []
-        
+        #Read and collate data about the files.
         self._all_files = [self._collate_docbook(doc_dir_path / dir_entry.name)
             for dir_entry in os.scandir(doc_dir_path)
             if dir_entry.is_file()
             if dir_entry.name.lower().endswith(".xml")
             if dir_entry.name not in ignored_includes]
         
-        self._all_dict = {file.name : file
+        #Index by name
+        self._all_by_name = {file.name() : file
             for file in self._all_files}
         
+        #Index by type and name.
         types = set()
         for file in self._all_files:
             types.add(file.type())
         
-        self._by_type = {type : {file.name : file
+        self._by_type = {type : {file.name() : file
                 for file in self._all_files
                 if file.type() == type}
             for type in types}
         
-        print(types, len(self._by_type))
+        self._verify_collation()
         
-        for type, type_dict in self._by_type.items():
-            print(type, len(type_dict))
+        #print(types, len(self._by_type))
         
-        print(F"Total: {len(self._all_files)}")
+        #for type, type_dict in self._by_type.items():
+        #    print(type, len(type_dict))
+        
+        #print(F"Total: {len(self._all_files)}")
 
 
     def _collate_docbook(self, file_path):
@@ -295,12 +313,54 @@ class Collate:
             
         except etree.XMLSyntaxError as e:
             print(F"File: {file_path} ERROR: {e}")
-
-        
     
-    def _add_include(self, file_path, root):
-        """Adds the file as an inclusion file."""
-        #TODO
-        pass
+    
+    def _verify_collation(self):
+        """Ensures that the collation contains consistent data."""
+        
+        include_list = self._by_type["included"]
+        
+        #Verify that all `xi:include` files exist and are part of our data.
+        #Specifically, they should be in the `include` list.
+        missing_includes = [(file.name(), incl) for file in self._all_files
+            for incl in file.includes()
+            if incl not in include_list]
+        
+        if len(missing_includes) != 0:
+            print("Some files include files that aren't part of the collation.")
+            for filename, incl in missing_includes:
+                print(F"'{filename}', '{incl}'")
+        
+        
+        #Verify that all files which are in our includes list are included
+        #by some file.
+        included_set = set()
+        for file in self._all_files:
+            for incl in file.includes():
+                included_set.add(incl)
+        
+        files_not_included = [name for name in include_list.keys()
+            if name not in included_set]
+            
+        if len(files_not_included) != 0:
+            print("Some include files are not included by any file.")
+            for filename in files_not_included:
+                print(filename)
+        
+        
+        #Verify that files which are cited are part of our collation.
+        uncited_files = [(file.name(), citation) for file in self._all_files
+            for citation in file.citations()
+            if citation not in self._all_by_name]
+            
+        if len(uncited_files) != 0:
+            print("Some files have citations that don't name a valid file.")
+            for filename, citation in uncited_files:
+                print(F"'{filename}', '{citation}'")
+        
+
+    def get_file(self, name):
+        return self._all_by_name[name]
+    
 
 
