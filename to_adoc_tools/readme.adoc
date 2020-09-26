@@ -59,15 +59,38 @@ Integrity checks:
 
 === DocBook Transformation
 
-The next step is to copy the DocBook source files to a temporary directory. Hwoever, this copy needs to modify the source files appropriately before Pandoc gets a crack at them.
+The next step is to create a modified copy of each DocBook source file to a temporary directory. The modification pre-chews the file before Pandoc sees it.
 
-For main files, we must do the following:
+For main files, we must do the following, in order:
 
-* Remove all `xi:include` elements. Any includes that go to non-version/header files  should be replaced with AsciiDoctor textual includes of the equivalent generated file.
+1. Replace elements with an `xml:id` of "seealso". We want to be able to find this heading easily in the AsciiDoc file afterwards, so we need to replace the section with valid DocBook. And the DocBook tags need to generate text that is searchable and unique in the AsciiDoc output file.
 
-* Remove any `refsect` elements with an `xml:id` of `versions` or `seealso`.
+2. Replace elements with an `xml:id` of "versions". We want to be able to parse through the functions and their version numbers in this section, but we need to do this in the AsciiDoc files. So the text here needs to pass through to AsciiDoc correctly. So we need searchable text for begin/end, as well as having each "function" and its version number specified.
+
+3. Replace any `citerefentry` elements with AsciiDoctor textual intra-page links.
+
+4. Remove all `xi:include` elements remaining. Any includes that go to non-version/header files should be replaced with AsciiDoctor textual includes of the equivalent generated file.
+
+
+How to remove an ElementTree element, while preserving the text on both sides of it.
+
+* Get the element before the element to be removed via an `.getprevious()`.
+
+** If there is no such element, then get the parent element via `.getparent` as the "previous".
+
+* Get the tail text of the element to be removed.
+
+** If the text of the element itself needs to be preserved, extract it and prepend it to the tail.
+
+* Append the tail text to the `text` of the previous element.
+
+* Remove the element.
+
+
 
 === Pandoc Transformation
+
+
 
 === AsciiDoctor Addendums
 

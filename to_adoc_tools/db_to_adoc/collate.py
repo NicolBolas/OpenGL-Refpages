@@ -1,30 +1,39 @@
 
+"""
+Loads the XML files in the given directory and extracts information about them.
+"""
+
 import os
 import pathlib
 import re
+import copy
 from lxml import etree
 
 _namespaces = {
 'db' : 'http://docbook.org/ns/docbook',
 'xi' : 'http://www.w3.org/2001/XInclude',
+'xml' : 'http://www.w3.org/XML/1998/namespace',
 }
 
+def _xpath(xpath):
+    return etree.XPath(xpath, namespaces=_namespaces)
+
 #Useful XPaths. Don't need to recreate them a bunch.
-_xpath_header_abstract_text = etree.XPath("db:refnamediv/db:refpurpose/descendant::text()", namespaces=_namespaces)
-_xpath_header_function_names = etree.XPath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype/db:funcdef/db:function/text()", namespaces=_namespaces)
+_xpath_header_abstract_text = _xpath("db:refnamediv/db:refpurpose/descendant::text()")
+_xpath_header_function_names = _xpath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype/db:funcdef/db:function/text()")
 
-_xpath_function = etree.XPath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype", namespaces=_namespaces)
+_xpath_function = _xpath("db:refsynopsisdiv/db:funcsynopsis/db:funcprototype")
 
-_xpath_func_name_prototype_text = etree.XPath("db:funcdef/db:function/text()", namespaces=_namespaces)
+_xpath_func_name_prototype_text = _xpath("db:funcdef/db:function/text()")
 
-_xpath_func_def_prototype = etree.XPath("db:funcdef", namespaces=_namespaces)
-_xpath_func_parameters = etree.XPath("db:paramdef", namespaces=_namespaces)
-_xpath_func_paramname = etree.XPath("db:parameter", namespaces=_namespaces)
+_xpath_func_def_prototype = _xpath("db:funcdef")
+_xpath_func_parameters = _xpath("db:paramdef")
+_xpath_func_paramname = _xpath("db:parameter")
 
-_xpath_citations = etree.XPath("descendant::db:citerefentry", namespaces=_namespaces)
-_xpath_citation_target = etree.XPath("db:refentrytitle/text()", namespaces=_namespaces)
+_xpath_citations = _xpath("descendant::db:citerefentry")
+_xpath_citation_target = _xpath("db:refentrytitle/text()")
 
-_xpath_xincludes = etree.XPath("descendant::xi:include", namespaces=_namespaces)
+_xpath_xincludes = _xpath("descendant::xi:include")
 
 #Useful regexes.
 _re_line_end = re.compile("\n\s*")
@@ -123,6 +132,7 @@ class MainFile:
         """Processes the XML to generate the appropriate data
         for the file."""
         self._file_path = file_path
+        self._xml_root = xml_root
         
         if xml_root.tag == '{http://docbook.org/ns/docbook}refentry':
             self._adoc_path = F"{file_path.stem}.adoc"
@@ -177,7 +187,7 @@ class MainFile:
 
 
     def _process_functions(self, xml_root):
-        """Reads the `refsynopsisdiv` and builds sufficient
+        """Reads the `refsynopsisdiv` and extracts sufficient
         information to generate Asciidoc text for them. But
         don't build that text here."""
         self._funcs = [FuncDecl(node) for node in _xpath_function(xml_root)]
@@ -234,10 +244,15 @@ class MainFile:
     def name(self):
         """The base name of the source file"""
         return self._file_path.stem
+    
+    
+    def copy_xml(self):
+        """Retrieves an independent copy of the XML file."""
+        return copy.deepcopy(self._xml_root)
         
 
     def abstract_text(self):
-        """Retrieves the textual abstract."""
+        """Retrieves the textual abstract, if present."""
         return self._abstract_text
     
     
@@ -247,6 +262,7 @@ class MainFile:
         
 
     def includes(self):
+        """Retrieves the list of include file names, minus extension."""
         if self._includes:
             return self._includes
         else:
@@ -254,6 +270,7 @@ class MainFile:
     
     
     def citations(self):
+        """Retrieves the set of files cited by the XML."""
         if self._citations:
             return self._citations
         else:
@@ -361,6 +378,15 @@ class Collate:
 
     def get_file(self, name):
         return self._all_by_name[name]
+        
+    
+    def files_by_type(self, type):
+        """Returns a list of the files of a particular type."""
+        return self._by_type[type].values()
+    
+    def list_of_files(self):
+        """Returns all of the files."""
+        return self._all_files
     
 
 
