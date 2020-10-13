@@ -3,6 +3,7 @@
 import os
 import pathlib
 import re
+import subprocess
 from lxml import etree
 
 
@@ -65,6 +66,7 @@ _xpath_citations = _xpath("descendant::db:citerefentry")
 
 _xpath_seealso = _xpath("descendant::*[@xml:id = 'seealso']")
 _xpath_versions = _xpath("descendant::*[@xml:id = 'versions']")
+_xpath_synopsis = _xpath("descendant::db:refsynopsisdiv")
 
 _xpath_version_func_names = _xpath("descendant::db:row/db:entry")
 _xpath_version_func_xptr = _xpath("descendant::db:row/xi:include/@xpointer")
@@ -141,13 +143,35 @@ def _replace_versions(xml_root, main_file):
         end_para.tail = "\n\t"
         
         version_node.getparent().replace(version_node, new_version)
-    
 
-def transform_docbook(temp_dir, main_file):
-    """"""
-    temp_dir = pathlib.PurePath(temp_dir)
-    
+
+def _replace_synopsis(xml_root):
+    """Replaces the DocBook function synopsis with a section that we will write our synopsis into later."""
+
+    synopsis_node = _xpath_synopsis(xml_root)[0]
+
+    new_synopsis = etree.Element(_db("refsect1"))
+    new_synopsis.tail = synopsis_node.tail
+
+    new_title = etree.SubElement(new_synopsis, _db("title"))
+    new_title.text = "Functions"
+    new_title.tail = "\n\t\t"
+
+    new_para = etree.SubElement(new_synopsis, _db("para"))
+    new_para.text = "FUNCSYNOPSIS_TEXT_REPLACEMENT"
+    new_para.tail = "\n\t"
+
+    synopsis_node.getparent().replace(synopsis_node, new_synopsis)
+
+
+def transform_docbook(dest_dir, main_file):
+    """Creates a temporary copy of the DocBook file, containing
+    modifications meant to make it easy to do post-Pandoc cleanup tasks.
+    Returns the path to the temporary directory."""
     xml_root = main_file.copy_xml()
+
+    #Replace sysnopsis
+    _replace_synopsis(xml_root)
 
     #Replace SeeAlso nodes.
     #Make sure that the XPath is completely finished before
@@ -157,7 +181,6 @@ def transform_docbook(temp_dir, main_file):
     
     #Replace version nodes.
     _replace_versions(xml_root, main_file)
-
     
     #Remove citations.
     #TODO: Make this generate AsciiDoc text for actual inter-page citations
@@ -165,11 +188,44 @@ def transform_docbook(temp_dir, main_file):
     
     for citation in citations:
         _remove_element(citation, preserve_text=True)
-    
+
+    #Write file.
+    dest_file = dest_dir / (main_file.name() + ".xml")
     xml_tree = etree.ElementTree(xml_root)
-    
-    dest_file = temp_dir / (main_file.name() + ".xml")
-    
-    print(dest_file)
-    
     xml_tree.write(str(dest_file), encoding="UTF-8", xml_declaration=True)
+    
+    return dest_file
+
+
+def to_asciidoctor(dest_dir, source_path):
+    """Performs Pandoc conversion of source to destination.
+    Returns the path to the generated file."""
+    dest_file = dest_dir / (source_path.stem + ".adoc")
+
+    cmdline = F'pandoc -o "{dest_file}" --from=docbook --to=asciidoc "{source_path}"'
+    #print(cmdline)
+    ret = subprocess.run(cmdline)
+
+    return dest_file
+
+def to_final_asciidoctor(dest_dir, source_path):
+    """Does various textual fixups within the AsciiDoctor files. Writes the 
+    data to the given directory. Returns the path of the generated file."""
+    pass
+
+
+_adoc_cmd = 'asciidoctor -d article -o {dest} -b html5 {src}'
+#_adoc_cmd = 'asciidoctor'
+
+def to_html(dest_dir, source_path):
+    """Performs AsciiDoctor conversion from AsciiDoc to HTML, into the given directory.
+    Returns path to the generated file."""
+    dest_file = dest_dir / (source_path.stem + ".html")
+
+    cmdline = _adoc_cmd.format(dest = dest_file, src = source_path)
+    print(cmdline)
+    ret = subprocess.run(cmdline, shell=True)
+
+    return dest_file
+
+

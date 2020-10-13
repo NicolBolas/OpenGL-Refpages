@@ -67,9 +67,19 @@ For main files, we must do the following, in order:
 
 2. Replace elements with an `xml:id` of "versions". We want to be able to parse through the functions and their version numbers in this section, but we need to do this in the AsciiDoc files. So the text here needs to pass through to AsciiDoc correctly. So we need searchable text for begin/end, as well as having each "function" and its version number specified.
 
-3. Replace any `citerefentry` elements with AsciiDoctor textual intra-page links.
+3. Remove the function synopsis sections, or otherwise replace it with something innocuous.
+
+3. Replace any `citerefentry` elements with AsciiDoctor textual intra-page links (or text that can be replaced with such).
 
 4. Remove all `xi:include` elements remaining. Any includes that go to non-version/header files should be replaced with AsciiDoctor textual includes of the equivalent generated file.
+
+5. Find inline Latex math and fix it up into AsciiDoctor format.
+
+6. Extract MathML and turn the MathML element into an inclusion from a file. Write a file containing the extracted MathML.
+
+
+
+
 
 
 How to remove an ElementTree element, while preserving the text on both sides of it.
@@ -90,9 +100,17 @@ How to remove an ElementTree element, while preserving the text on both sides of
 
 === Pandoc Transformation
 
+Iterate over all the files in the directory and use Pandoc to transform them into AsciiDoctor.
+
 
 
 === AsciiDoctor Addendums
+
+* Build declarations of functions in synopsis section.
+* Build versions.
+* Convert inclusions into AsciiDoctor inclusions
+
+
 
 ** Perform the Pandoc conversion of the file to the destination directory. Store the name of the destination file in the data structure.
 
